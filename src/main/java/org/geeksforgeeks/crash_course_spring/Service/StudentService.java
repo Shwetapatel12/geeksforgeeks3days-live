@@ -1,6 +1,7 @@
 package org.geeksforgeeks.crash_course_spring.Service;
 
 import org.geeksforgeeks.crash_course_spring.Entity.Student;
+import org.geeksforgeeks.crash_course_spring.exceptionhandling.NotFoundException;
 import org.geeksforgeeks.crash_course_spring.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,9 @@ import java.util.Optional;
 @Service
 public class StudentService {
 
-    @Autowired
     private final StudentRepository studentRepository;
 
+    @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
@@ -21,26 +22,20 @@ public class StudentService {
         return this.studentRepository.save(student);
     }
 
-    public Student getStudnetById(long studentId){
-        Optional<Student> optionalValue =  this.studentRepository.findById(studentId);
-        if (optionalValue.isPresent()) {
-            return optionalValue.get();
-        }
-        return null;
+    public Student getStudentById(long studentId) {
+        Optional<Student> optionalValue = this.studentRepository.findById(studentId);
+        return optionalValue.orElseThrow(() -> new NotFoundException("Student with ID: " + studentId + " was not found."));
     }
 
-    public Student updatedStudent(Student student) {
-        Student existingStudent = this.getStudnetById(student.getId());
-        if(existingStudent == null) {
-            return null;
-        }
-        existingStudent.setFirstName(student.getFirstName());
-        existingStudent.setLastName(student.getLastName());
-        return this.studentRepository.save(existingStudent);
+    public Student updateStudent(Student student) {
+//        Student existingStudent = this.getStudentById(student.getId());
+//        existingStudent.getClass(student.getFirstName());
+//        existingStudent.setLastName(student.getLastName());
+//        return this.studentRepository.save(existingStudent);
+        return null;
     }
 
     public void deleteStudentById(long studentId) {
         this.studentRepository.deleteById(studentId);
     }
-
 }
